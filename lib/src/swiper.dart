@@ -110,6 +110,8 @@ class Swiper extends StatefulWidget {
 
   final PageIndicatorLayout indicatorLayout;
 
+  final bool keepAlive;
+
   Swiper({
     this.itemBuilder,
     this.indicatorLayout: PageIndicatorLayout.NONE,
@@ -145,6 +147,7 @@ class Swiper extends StatefulWidget {
     this.outer: false,
     this.scale,
     this.fade,
+    this.keepAlive: true
   })  : assert(itemBuilder != null || transformer != null,
             "itemBuilder and transformItemBuilder must not be both null"),
         assert(
@@ -186,6 +189,7 @@ class Swiper extends StatefulWidget {
     double itemWidth,
     bool outer: false,
     double scale: 1.0,
+    bool keepAlive: true,
   }) {
     assert(children != null, "children must not be null");
 
@@ -250,6 +254,7 @@ class Swiper extends StatefulWidget {
     double itemWidth,
     bool outer: false,
     double scale: 1.0,
+    bool keepAlive: true,
   }) {
     return new Swiper(
         transformer: transformer,
@@ -378,7 +383,7 @@ abstract class _SwiperTimerMixin extends State<Swiper> {
   }
 }
 
-class _SwiperState extends _SwiperTimerMixin {
+class _SwiperState extends _SwiperTimerMixin with AutomaticKeepAliveClientMixin{
   int _activeIndex;
 
   TransformerPageController _pageController;
@@ -585,6 +590,7 @@ class _SwiperState extends _SwiperTimerMixin {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     Widget swiper = _buildSwiper();
     List<Widget> listForStack;
     SwiperPluginConfig config;
@@ -645,6 +651,9 @@ class _SwiperState extends _SwiperTimerMixin {
       mainAxisSize: MainAxisSize.min,
     );
   }
+
+  @override
+  bool get wantKeepAlive => widget.keepAlive;
 }
 
 abstract class _SubSwiper extends StatefulWidget {
